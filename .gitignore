@@ -1,0 +1,8 @@
+old/
+.idea/
+__pycache__/
+reboot/model/
+reboot/runs/
+reboot/runs_old/
+reboot/__pycache__/
+reboot/out/
