@@ -312,3 +312,73 @@ running_mean should contain 768 elements not 1
 dnn_relu-768_1-mh_dy_wy_hr_1-adamw-1-300--dropout_0.25_regul_0-lr_0.001
 16484.4690824992
 
+##1
+dnn_tanh-768_1-mh_dy_wy_hr_1-adamw-100-300--dropout_0.25_regul_0.05_batchnorm_True_False-lr_0.001
+1.7527756541
+
+##0
+dnn_tanh-768_1-mh_dy_wy_hr_1-adamw-100-300--dropout_0.25_regul_0.05_batchnorm_True_True-lr_0.001
+1.9209913170
+
+##0
+sk-skxgbtree-mh_dy_wy_hr_1_me_tx_tn_tn_dt_hy_cd_rl_se_wr_wd-1-n_1024_learning_rate_0.03_subsample_0.8
+0.0003745944
+
+##1
+sk-skxgbtree-mh_dy_wy_hr_1_me_tx_tn_tn_dt_hy_cd_rl_se_wr_wd-1-n_2048_learning_rate_0.03_subsample_0.8
+0.0001592859
+
+##1
+dnn_relu-768_1-mh_dy_wy_hr_1-adamw-1-1500--dropout_0.25_regul_0.05-lr_0.001
+2342.8412673392
+
+##2
+dnn_relu-768_1-mh_dy_wy_hr_1-adamw-1-1500--dropout_0.25_regul_0.01-lr_0.001
+1625.1545013004
+
+##0
+dnn_relu-512_1-mh_dy_wy_hr_1-adamw-1-1500--dropout_0.25_regul_0.05-lr_0.001
+2362.0825648907
+
+##0
+dnn_relu-768_1-mh_dy_wy_hr_1-adamw-1-300--dropout_0.25_regul_0.05-lr_0.001
+FAILED
+Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+##0
+dnn_relu-768_1-mh_dy_wy_hr_1_me_tx_tn_tn_dt_hy_cd_rl_se_wr_wd-adamw-1-500--dropout_0.25_regul_0.05-lr_0.001
+FAILED
+Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+##1
+dnn_relu-768_1-mh_dy_wy_hr_1-adamw-1-500--dropout_0.25_regul_0.05-lr_0.001
+FAILED
+Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+##0
+dnn_relu-768_1-mh_dy_wy_hr_1_me_tx_tn_tn_dt_hy_cd_rl_se_wr_wd-adamw-1-500--dropout_0.25_regul_0.05-lr_0.001
+FAILED
+Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+##2
+dnn_relu-1024_1-mh_dy_wy_hr_1-adamw-1-1000--dropout_0.25_regul_0.05-lr_0.001
+FAILED
+Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+
+##0
+dnn_relu-768_1-mh_dy_wy_hr_1_me_tx_tn_tn_dt_hy_cd_rl_se_wr_wd-adamw-1-500--dropout_0.25_regul_0.05-lr_0.001
+FAILED
+mat1 dim 1 must match mat2 dim 0
+
+##2
+dnn_relu-512_1-mh_dy_wy_hr_1-adamw-1-300--dropout_0.25_regul_0.05-lr_0.001
+834702.1609920134
+
+##0
+dnn_relu-768_1-mh_dy_wy_hr_1-adamw-1-300--dropout_0.25_regul_0.05-lr_0.001
+834992.0071458597
+
+##1
+dnn_relu-1024_1-mh_dy_wy_hr_1-adamw-1-300--dropout_0.25_regul_0.05-lr_0.001
+796768.2812105927
+

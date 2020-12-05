@@ -163,6 +163,8 @@ def infer_func_builder(features: list, data_all=None):
 
 
 def main(params, USE_GPU, INFER, verbose=False):
+    date_now = datetime.now().strftime('%m%d%H%M')
+
     PROJ_ID = "-".join(
         ['sk', params['model'], '_'.join([i[0] + i[-1] if type(i) == str else str(i) for i in params['features']]),
          str(params['speed_normalizer']),
@@ -206,7 +208,7 @@ def main(params, USE_GPU, INFER, verbose=False):
     print('--Contructing Eval Func')
     eval_f = eval_func_builder(params['features'], loss_f, data_all)
 
-    writer = SummaryWriter(f"runs/{PROJ_ID}_{datetime.now().strftime('%m%d%H%M')}")
+    writer = SummaryWriter(f"runs/{PROJ_ID}_{date_now}")
 
     print('--Training--')
     y_ = net.train(training_x, training_y)
@@ -217,7 +219,7 @@ def main(params, USE_GPU, INFER, verbose=False):
     eval_total_loss, num_eval_item = eval_f(net, testing_x, testing_y)
     writer.add_scalar('Loss/eval', eval_total_loss / num_eval_item, 0)
 
-    save(net, PROJ_ID)
+    save(net, f"{PROJ_ID}_{date_now}")
 
     if INFER:
         print("INFER_retraining")
@@ -232,7 +234,7 @@ def main(params, USE_GPU, INFER, verbose=False):
 
         infer_f = infer_func_builder(params['features'], data_all)
         data_target['speed'] = infer_f(net, data_target)
-        data_target[['id', 'speed']].to_csv(f"out/{PROJ_ID}.csv", index=False)
+        data_target[['id', 'speed']].to_csv(f"out/{PROJ_ID}_{date_now}.csv", index=False)
 
     print("Finished:", PROJ_ID)
     print("*" * 20)

@@ -14,6 +14,7 @@ import logging
 features:
 'features': ['month', 'day', 'weekday', 'hour', 1, 'mean_pressure', 'temp_max', 'temp_mean', 'temp_min', 'dew_point', 'humidity', 'cloud', 'rainfall', 'sunshine', 'wind_dir', 'wind_speed'],
 """
+
 params = {
     'model': 'dnn_relu',
     'layer': [768, 1],
@@ -270,76 +271,54 @@ def main(params, USE_GPU, INFER, verbose=False):
     print('--Contructing Eval Func')
     eval_f = eval_func_builder(params['features'], loss_f, data_all)
 
-    writer = SummaryWriter(f"runs/{PROJ_ID}_{date_now}")
-    writer.add_graph(net, next(iter(testing_dataloader))[0], True)
-    if not INFER:
-        print('--Training--')
-        for epoch in range(params['epochs']):
-            # training
-            net.train()
-            running_loss = 0
-            with tqdm(total=len(training_dataloader), disable=not verbose) as pbar:
-                for i, (x, y) in enumerate(training_dataloader):
-                    optim.zero_grad()
-                    y_ = net(x)
-                    regul = 0
-                    for p in net.parameters():
-                        regul += p.norm(2)
-                    loss = loss_f(y_ * params['speed_normalizer'], y * params['speed_normalizer'])
-                    running_loss += loss
-                    loss += params['config']['regul'] * regul
-                    loss.backward()
-                    optim.step()
-                    pbar.update()
-            if verbose:
-                print(f"Epoch {epoch:02d}: loss={running_loss:5.3f}, avg={running_loss / len(training_dataloader):5.3f}")
-            writer.add_scalar('Loss/train', running_loss / len(training_dataloader), epoch)
-            if params['scheduler']:
-                scheduler.step()
-            # eval
-            if epoch % params['eval'] == params['eval'] - 1:
-                eval_total_loss, num_eval_item, _ = eval_f(net, testing_dataloader, verbose=verbose)
-                writer.add_scalar('Loss/eval', eval_total_loss / num_eval_item, epoch // params['eval'] + 1)
-        save(net, f"{PROJ_ID}_{date_now}")
-
-        eval_total_loss, num_eval_item, _ = eval_f(net, testing_dataloader, verbose=verbose)
-
+    # writer = SummaryWriter(f"runs/{PROJ_ID}_{date_now}")
+    # writer.add_graph(net, next(iter(testing_dataloader))[0], True)
+    #
+    # print('--Training--')
+    # for epoch in range(params['epochs']):
+    #     # training
+    #     net.train()
+    #     running_loss = 0
+    #     with tqdm(total=len(training_dataloader), disable=not verbose) as pbar:
+    #         for i, (x, y) in enumerate(training_dataloader):
+    #             optim.zero_grad()
+    #             y_ = net(x)
+    #             regul = 0
+    #             for p in net.parameters():
+    #                 regul += p.norm(2)
+    #             loss = loss_f(y_ * params['speed_normalizer'], y * params['speed_normalizer'])
+    #             running_loss += loss
+    #             loss += params['config']['regul'] * regul
+    #             loss.backward()
+    #             optim.step()
+    #             pbar.update()
+    #     if verbose:
+    #         print(f"Epoch {epoch:02d}: loss={running_loss:5.3f}, avg={running_loss / len(training_dataloader):5.3f}")
+    #     writer.add_scalar('Loss/train', running_loss / len(training_dataloader), epoch)
+    #     if params['scheduler']:
+    #         scheduler.step()
+    #     # eval
+    #     if epoch % params['eval'] == params['eval'] - 1:
+    #         eval_total_loss, num_eval_item, _ = eval_f(net, testing_dataloader, verbose=verbose)
+    #         writer.add_scalar('Loss/eval', eval_total_loss / num_eval_item, epoch // params['eval'] + 1)
+    # save(net, f"{PROJ_ID}_{date_now}")
+    #
+    # eval_total_loss, num_eval_item, _ = eval_f(net, testing_dataloader, verbose=verbose)
     if INFER:
         print("INFER_retraining")
         training_dataloader = DataLoader(dataset, shuffle=True, batch_size=params['batch_size'], num_workers=0)
-        for epoch in range(params['epochs']):
-            # training
-            net.train()
-            running_loss = 0
-            with tqdm(total=len(training_dataloader), disable=not verbose) as pbar:
-                for i, (x, y) in enumerate(training_dataloader):
-                    optim.zero_grad()
-                    y_ = net(x)
-                    regul = 0
-                    for p in net.parameters():
-                        regul += p.norm(2)
-                    loss = loss_f(y_ * params['speed_normalizer'], y * params['speed_normalizer'])
-                    running_loss += loss
-                    loss += params['config']['regul'] * regul
-                    loss.backward()
-                    optim.step()
-                    pbar.update()
-            if params['scheduler']:
-                scheduler.step()
-        save(net, f"{PROJ_ID}_{date_now}")
-        if verbose:
-            print(f"Training: loss={running_loss:5.3f}, avg={running_loss / len(training_dataloader):5.3f}")
-        eval_total_loss, num_eval_item, _ = eval_f(net, testing_dataloader)
-
+        net_name = "model/dnn_relu-768_1-mh_dy_wy_hr-adamw-1-300--dropout_0.25_regul_0.05-lr_0.001.pt"
+        net = torch.load(net_name)
         infer_f = infer_func_builder(params['features'], data_all)
         data_target['speed'] = infer_f(net, data_target)*params['speed_normalizer']
         data_target[['id', 'speed']].to_csv(f"out/{PROJ_ID}_{date_now}.csv", index=False)
+        print("csv:", f"out/{PROJ_ID}_{date_now}.csv")
 
     print(PROJ_ID)
-    eval_total_loss, num_eval_item, _ = eval_f(net, testing_dataloader)
+
     print("Finished:", PROJ_ID)
     print("*" * 20)
-    return PROJ_ID, eval_total_loss / num_eval_item
+    return PROJ_ID
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from collections import OrderedDict
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor
 from xgboost import XGBRegressor
 
+
 class Model_builder(object):
     @classmethod
     def skrandforest(cls):
@@ -48,26 +49,38 @@ class SKModel():
     def predict(self, x):
         return self.model.predict(x)
 
+
 class SK_RandomForest(SKModel):
     def __init__(self, n, max_depth=None):
         super().__init__(RandomForestRegressor(n_estimators=n, max_depth=max_depth))
+
 
 class SK_AdaBoost(SKModel):
     def __init__(self, n, max_depth=None):
         super().__init__(AdaBoostRegressor(n_estimators=n, loss='square'))
 
+
 class SK_GradientBoosting(SKModel):
     def __init__(self, n, max_depth=None):
         super().__init__(GradientBoostingRegressor(n_estimators=n))
 
+
 class SK_XGBRegressor_gbtree(SKModel):
-    def __init__(self, n, max_depth=None, learning_rate=None):
-        super().__init__(XGBRegressor(n_estimators=n, max_depth=max_depth, learning_rate=learning_rate, objective="reg:squarederror", booster='gbtree'))
+    def __init__(self, n, max_depth=None, learning_rate=None, subsample=1):
+        super().__init__(
+            XGBRegressor(n_estimators=n, max_depth=max_depth, learning_rate=learning_rate, subsample=subsample,
+                         objective="reg:squarederror", booster='gbtree'))
+
 
 class SK_XGBRegressor_gblinear(SKModel):
-    def __init__(self, n, max_depth=None, learning_rate=None):
-        super().__init__(XGBRegressor(n_estimators=n, max_depth=max_depth, learning_rate=learning_rate, objective="reg:squarederror", booster='gblinear'))
+    def __init__(self, n, max_depth=None, learning_rate=None, subsample=1):
+        super().__init__(
+            XGBRegressor(n_estimators=n, max_depth=max_depth, learning_rate=learning_rate, subsample=subsample,
+                         objective="reg:squarederror", booster='gblinear'))
+
 
 class SK_XGBRegressor_dart(SKModel):
-    def __init__(self, n, max_depth=None, learning_rate=None):
-        super().__init__(XGBRegressor(n_estimators=n, max_depth=max_depth, learning_rate=learning_rate, objective="reg:squarederror", booster='dart'))
+    def __init__(self, n, max_depth=None, learning_rate=None, subsample=1):
+        super().__init__(
+            XGBRegressor(n_estimators=n, max_depth=max_depth, learning_rate=learning_rate, subsample=subsample,
+                         objective="reg:squarederror", booster='dart'))
