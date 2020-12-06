@@ -307,8 +307,14 @@ def main(params, USE_GPU, INFER, verbose=False):
     if INFER:
         print("INFER_retraining")
         training_dataloader = DataLoader(dataset, shuffle=True, batch_size=params['batch_size'], num_workers=0)
-        net_name = "model/dnn_relu-768_1-mh_dy_wy_hr-adamw-1-300--dropout_0.25_regul_0.05-lr_0.001.pt"
-        net = torch.load(net_name)
+
+        # model
+        print('--Constructing Model--')
+        net = model_factory(params['model'], feature_size, params['layer'], params['config'])
+        if USE_GPU:
+            net = net.cuda()
+        net_name = "model/final_model.pt"
+        net.load_state_dict(torch.load(net_name))
         infer_f = infer_func_builder(params['features'], data_all)
         data_target['speed'] = infer_f(net, data_target)*params['speed_normalizer']
         data_target[['id', 'speed']].to_csv(f"out/{PROJ_ID}_{date_now}.csv", index=False)
